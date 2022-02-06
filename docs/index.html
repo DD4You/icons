@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DD4You Icons</title>
+    <link rel="stylesheet" href="../dd4you.icons.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="grid_bg"></div>
+    <div class="grid" id="grid"></div>
+
+    <script>
+        const copy = (e) => {
+            let icon = e.querySelector('h4').innerText;
+            navigator.clipboard.writeText('<span class="dd dd-' + icon + '"></span>');
+            alert('copid');
+        }
+
+        // read json
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                icons = data.icons.sort(dynamicSort("name"))
+                console.log(icons.len);
+                let output = '<div class="column"><div class="box">';
+                icons.forEach((element, i) => {
+                    i++;
+
+                    output += '<div onclick="copy(this)" class="list">';
+                    output += '<div class="icon_box">';
+                    output += '<span class="dd dd-' + element.name + '"></span>';
+                    output += '</div>';
+                    output += '<div class="content">';
+                    output += '<h4>' + element.name + '</h4>';
+                    output += '<p>' + element.code + '</p>';
+                    output += '</div></div>';
+
+                    if (i % 6 == 0 && icons.length > i) {
+                        output += '</div></div>';
+                        output += '<div class="column"><div class="box">';
+                    }
+
+                });
+                output += '</div></div>';
+                document.getElementById('grid').innerHTML = output;
+            })
+            .catch(error => console.log(error));
+
+
+        const dynamicSort = (property) => {
+            var sortOrder = 1;
+            if (property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
+            }
+            return function (a, b) {
+                if (sortOrder == -1) {
+                    return b[property].localeCompare(a[property]);
+                } else {
+                    return a[property].localeCompare(b[property]);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
